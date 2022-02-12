@@ -1,6 +1,6 @@
 package com.view;
 
-import java.awt.BorderLayout;
+
 import java.awt.Cursor;
 import java.awt.EventQueue;
 
@@ -19,6 +19,10 @@ import java.awt.event.MouseEvent;
 
 public class Home extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel homeHeader;
 	private JSeparator separator;
@@ -75,10 +79,12 @@ public class Home extends JFrame {
 		if (studentLoginButton == null) {
 			studentLoginButton = new JButton("Student");
 			studentLoginButton.addMouseListener(new MouseAdapter() {
+				@SuppressWarnings("deprecation")
 				@Override
 				public void mouseEntered(MouseEvent e) {
 					setCursor(Cursor.HAND_CURSOR);
 				}
+				@SuppressWarnings("deprecation")
 				@Override
 				public void mouseExited(MouseEvent e) {
 					setCursor(Cursor.DEFAULT_CURSOR);

@@ -12,6 +12,8 @@ import javax.swing.JSeparator;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 
@@ -30,7 +32,8 @@ public class StudentHome extends JFrame {
 	private JButton logoutButton;
 	private JLabel userNameLabel;
 	private JLabel settingLabel;
-	
+	private String currentUser;
+	private JLabel infoLabel;
 
 	/**
 	 * Launch the application.
@@ -39,7 +42,7 @@ public class StudentHome extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentHome frame = new StudentHome();
+					StudentHome frame = new StudentHome("test");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,7 +54,8 @@ public class StudentHome extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public StudentHome() {
+	public StudentHome(String currentUser) {
+		this.currentUser = currentUser;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 575, 370);
 		contentPane = new JPanel();
@@ -64,6 +68,7 @@ public class StudentHome extends JFrame {
 		contentPane.add(getLogoutButton());
 		contentPane.add(getUserNameLabel());
 		contentPane.add(getSettingLabel());
+		contentPane.add(getInfoLabel());
 	}
 	private JLabel getStudentHomeHeader() {
 		if (studentHomeHeader == null) {
@@ -91,6 +96,13 @@ public class StudentHome extends JFrame {
 	private JButton getLogoutButton() {
 		if (logoutButton == null) {
 			logoutButton = new JButton("Log out");
+			logoutButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					currentUser = null;
+					new Home().setVisible(true);
+					dispose();
+				}
+			});
 			logoutButton.setBounds(460, 21, 89, 23);
 		}
 		return logoutButton;
@@ -98,6 +110,7 @@ public class StudentHome extends JFrame {
 	private JLabel getUserNameLabel() {
 		if (userNameLabel == null) {
 			userNameLabel = new JLabel("");
+			userNameLabel.setText(currentUser);
 			userNameLabel.setBounds(67, 74, 71, 18);
 		}
 		return userNameLabel;
@@ -108,12 +121,27 @@ public class StudentHome extends JFrame {
 			settingLabel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					new StudentSetting().setVisible(true);
-					
+					new StudentSetting(currentUser).setVisible(true);
+					dispose();
 				}
 			});
-			settingLabel.setBounds(486, 76, 46, 14);
+			settingLabel.setBounds(474, 72, 72, 23);
 		}
 		return settingLabel;
+	}
+	private JLabel getInfoLabel() {
+		if (infoLabel == null) {
+			infoLabel = new JLabel("info");
+			infoLabel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					new StudentInfo(currentUser).setVisible(true);
+					dispose();
+				}
+			});
+			infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			infoLabel.setBounds(392, 72, 72, 23);
+		}
+		return infoLabel;
 	}
 }

@@ -20,6 +20,8 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class StudentLogin extends JFrame {
 
@@ -36,6 +38,7 @@ public class StudentLogin extends JFrame {
 	private JLabel userNameLabel;
 	private JLabel passwordLabel;
 	private JPasswordField passwordField;
+	private JLabel registerLink;
 
 	/**
 	 * Launch the application.
@@ -71,6 +74,7 @@ public class StudentLogin extends JFrame {
 		contentPane.add(getUserNameLabel());
 		contentPane.add(getPasswordLabel());
 		contentPane.add(getPasswordField());
+		contentPane.add(getRegisterLink());
 	}
 
 	private JLabel getStudentLoginHeader() {
@@ -114,7 +118,7 @@ public class StudentLogin extends JFrame {
 					
 					StudentService studentService = new StudentServiceImpl();
 					if(studentService.login(userNameField.getText(), passwordField.getText())) {
-						new StudentHome().setVisible(true);
+						new StudentHome(userNameField.getText()).setVisible(true);
 						dispose();
 					}else {
 						JOptionPane.showMessageDialog(null,"Username/Password is invalid!");
@@ -158,5 +162,20 @@ public class StudentLogin extends JFrame {
 			passwordField.setBounds(156, 148, 192, 25);
 		}
 		return passwordField;
+	}
+	private JLabel getRegisterLink() {
+		if (registerLink == null) {
+			registerLink = new JLabel("click here if you are new");
+			registerLink.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					new StudentRegister().setVisible(true);
+					dispose();
+				}
+			});
+			registerLink.setHorizontalAlignment(SwingConstants.CENTER);
+			registerLink.setBounds(83, 243, 341, 14);
+		}
+		return registerLink;
 	}
 }
