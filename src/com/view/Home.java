@@ -27,6 +27,7 @@ public class Home extends JFrame {
 	private JLabel homeHeader;
 	private JSeparator separator;
 	private JButton studentLoginButton;
+	private JButton teacherLoginButton;
 
 	/**
 	 * Launch the application.
@@ -57,6 +58,7 @@ public class Home extends JFrame {
 		contentPane.add(getHomeHeader());
 		contentPane.add(getSeparator());
 		contentPane.add(getStudentLoginButton());
+		contentPane.add(getTeacherLoginButton());
 	}
 	private JLabel getHomeHeader() {
 		if (homeHeader == null) {
@@ -99,5 +101,18 @@ public class Home extends JFrame {
 			studentLoginButton.setBounds(205, 135, 89, 23);
 		}
 		return studentLoginButton;
+	}
+	private JButton getTeacherLoginButton() {
+		if (teacherLoginButton == null) {
+			teacherLoginButton = new JButton("Teacher");
+			teacherLoginButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					new TeacherLogin().setVisible(true);
+					dispose();
+				}
+			});
+			teacherLoginButton.setBounds(205, 179, 89, 23);
+		}
+		return teacherLoginButton;
 	}
 }

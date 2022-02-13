@@ -8,8 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.model.Student;
+import com.model.Teacher;
 import com.service.StudentService;
 import com.service.StudentServiceImpl;
+import com.service.TeacherService;
+import com.service.TeacherServiceImpl;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,17 +22,16 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
+import com.toedter.calendar.JDateChooser;
 
-public class StudentRegister extends JFrame {
+public class TeacherRegister extends JFrame {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JLabel studentRegisterHeader;
+	private JLabel TeacherRegisterHeader;
 	private JSeparator separator;
 	private JLabel firstNameLabel;
 	private JTextField firstNameField;
@@ -41,6 +43,10 @@ public class StudentRegister extends JFrame {
 	private JLabel userNameLabel;
 	private JLabel passwordLabel;
 	private JPasswordField passwordField;
+	private JTextField emailField;
+	private JDateChooser dateChooser;
+	private JLabel emailLabel;
+	private JLabel dateChooserLabel;
 
 	/**
 	 * Launch the application.
@@ -49,7 +55,7 @@ public class StudentRegister extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentRegister frame = new StudentRegister();
+					TeacherRegister frame = new TeacherRegister();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -61,14 +67,14 @@ public class StudentRegister extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public StudentRegister() {
+	public TeacherRegister() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 350, 361);
+		setBounds(100, 100, 350, 455);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		contentPane.add(getStudentRegisterHeader());
+		contentPane.add(getTeacherRegisterHeader());
 		contentPane.add(getSeparator());
 		contentPane.add(getFirstNameLabel());
 		contentPane.add(getFirstNameField());
@@ -80,16 +86,20 @@ public class StudentRegister extends JFrame {
 		contentPane.add(getUserNameLabel());
 		contentPane.add(getPasswordLabel());
 		contentPane.add(getPasswordField_1());
+		contentPane.add(getEmailField());
+		contentPane.add(getDateChooser());
+		contentPane.add(getEmailLabel());
+		contentPane.add(getDateChooserLabel());
 	}
-	private JLabel getStudentRegisterHeader() {
-		if (studentRegisterHeader == null) {
-			studentRegisterHeader = new JLabel("Student Register");
-			studentRegisterHeader.setFont(new Font("Tahoma", Font.BOLD, 18));
-			studentRegisterHeader.setVerticalAlignment(SwingConstants.BOTTOM);
-			studentRegisterHeader.setHorizontalAlignment(SwingConstants.CENTER);
-			studentRegisterHeader.setBounds(0, 0, 334, 51);
+	private JLabel getTeacherRegisterHeader() {
+		if (TeacherRegisterHeader == null) {
+			TeacherRegisterHeader = new JLabel("Student Register");
+			TeacherRegisterHeader.setFont(new Font("Tahoma", Font.BOLD, 18));
+			TeacherRegisterHeader.setVerticalAlignment(SwingConstants.BOTTOM);
+			TeacherRegisterHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			TeacherRegisterHeader.setBounds(0, 0, 334, 51);
 		}
-		return studentRegisterHeader;
+		return TeacherRegisterHeader;
 	}
 	private JSeparator getSeparator() {
 		if (separator == null) {
@@ -153,27 +163,38 @@ public class StudentRegister extends JFrame {
 						JOptionPane.showMessageDialog(userNameField,"User name cannot be empty");
 						return;
 					}
+					if(emailField.getText().isBlank()) {
+						JOptionPane.showMessageDialog(emailField,"Email Field cannot be empty");
+						return;
+					}
+					if(dateChooser.getDate().after(new Date())) {
+						JOptionPane.showMessageDialog(dateChooser,"you can't be older than today");
+						return;
+					}
 					if(passwordField.getText().isBlank()) {
 						JOptionPane.showMessageDialog(passwordField,"password cannot be empty");
 						return;
 					}
-					StudentService studentService = new StudentServiceImpl();
-					Student student = new Student();
-					student.setFirstName(firstNameField.getText());
-					student.setLastName(lastNameField.getText());
-					student.setUserName(userNameField.getText());
-					student.setPassword(passwordField.getText());
+				
+					TeacherService ts = new TeacherServiceImpl();
+					Teacher teacher = new Teacher();
+					teacher.setFirstName(firstNameField.getText());
+					teacher.setLastName(lastNameField.getText());
+					teacher.setUserName(userNameField.getText());
+					teacher.setEmail(emailField.getText());
+					teacher.setPassword(passwordField.getText());
+					teacher.setDob(dateChooser.getDate());
 					
-					if(studentService.register(student)) {
-						JOptionPane.showMessageDialog(null, "Succesfully registerd");
-						new StudentLogin().setVisible(true);
+					if(ts.register(teacher)) {
+						JOptionPane.showMessageDialog(null,"Successfully Register");
+						new TeacherLogin().setVisible(true);
 						dispose();
 					}else {
-						JOptionPane.showMessageDialog(null, "Something went wrong");
+						JOptionPane.showMessageDialog(null,"Sorry ! something went wrong");
 					}
 				}
 			});
-			registerButton.setBounds(112, 286, 89, 23);
+			registerButton.setBounds(112, 382, 89, 23);
 		}
 		return registerButton;
 	}
@@ -184,7 +205,7 @@ public class StudentRegister extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 				}
 			});
-			clearButton.setBounds(211, 286, 93, 23);
+			clearButton.setBounds(211, 382, 93, 23);
 		}
 		return clearButton;
 	}
@@ -198,15 +219,44 @@ public class StudentRegister extends JFrame {
 	private JLabel getPasswordLabel() {
 		if (passwordLabel == null) {
 			passwordLabel = new JLabel("Password");
-			passwordLabel.setBounds(10, 223, 91, 25);
+			passwordLabel.setBounds(10, 329, 91, 25);
 		}
 		return passwordLabel;
 	}
 	private JPasswordField getPasswordField_1() {
 		if (passwordField == null) {
 			passwordField = new JPasswordField();
-			passwordField.setBounds(112, 225, 192, 28);
+			passwordField.setBounds(112, 327, 192, 28);
 		}
 		return passwordField;
+	}
+	private JTextField getEmailField() {
+		if (emailField == null) {
+			emailField = new JTextField();
+			emailField.setColumns(10);
+			emailField.setBounds(112, 217, 192, 28);
+		}
+		return emailField;
+	}
+	private JDateChooser getDateChooser() {
+		if (dateChooser == null) {
+			dateChooser = new JDateChooser();
+			dateChooser.setBounds(111, 271, 193, 28);
+		}
+		return dateChooser;
+	}
+	private JLabel getEmailLabel() {
+		if (emailLabel == null) {
+			emailLabel = new JLabel("Username");
+			emailLabel.setBounds(10, 224, 91, 25);
+		}
+		return emailLabel;
+	}
+	private JLabel getDateChooserLabel() {
+		if (dateChooserLabel == null) {
+			dateChooserLabel = new JLabel("Username");
+			dateChooserLabel.setBounds(10, 274, 91, 25);
+		}
+		return dateChooserLabel;
 	}
 }
